@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  http:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "81:80"
+    volumes:
+      - .:/var/www/html
+
+  composer:
+    image: composer/composer
+    command: composer install --ignore-platform-reqs
+    volumes:
+      - ./:/app
