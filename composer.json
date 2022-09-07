@@ -9,6 +9,8 @@
     "symfony/dom-crawler": "^6.1",
     "guzzlehttp/guzzle": "^7.0",
     "predis/predis": "^2.0",
-    "snc/redis-bundle": "^4.3"
+    "snc/redis-bundle": "^4.3",
+    "ext-redis": "*",
+    "ext-zlib": "*"
   }
 }
