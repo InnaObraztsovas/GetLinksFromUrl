@@ -6,23 +6,33 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class CacheRequest
 {
-    public function CacheQuery()
-    {
-        $marshaller = new \Symfony\Component\Cache\Marshaller\DeflateMarshaller(new \Symfony\Component\Cache\Marshaller\DefaultMarshaller());
-        $cachePool = new FilesystemAdapter('', 0, "cache", $marshaller);
-        $data = $cachePool->getItem($_SERVER['QUERY_STRING']);
-        if (!$data->isHit())
-        {
-            $data->set('');
-            $cachePool->save($data);
-        }
 
-        if ($cachePool->hasItem(['QUERY_STRING']))
-        {
-            $data = $cachePool->getItem(['QUERY_STRING']);
-            echo $data->get();
-            echo "\n";
+    private FilesystemAdapter $cachePool;
+
+    public function __construct()
+    {
+        $this->cachePool = new FilesystemAdapter('', 0, "cache");
+    }
+
+    public function save(string $key): void
+    {
+        $data = $this->cachePool->getItem(md5($key));
+        if (!$data->isHit()) {
+            $data->set('From cache:' . json_encode($key));
+            $this->cachePool->save($data);
         }
-        }
+    }
+
+    public function has(string $key): string
+    {
+        $data = $this->cachePool->getItem($key);
+        return $data->get();
+    }
+
+    public function existCache(string $key): bool
+    {
+        return $this->cachePool->hasItem($key);
+    }
 
 }
+

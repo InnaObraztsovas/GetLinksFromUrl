@@ -3,9 +3,9 @@
 namespace Core;
 
 
-class GetData
+class HttpHandler
 {
-    public function getLink(string $uri): string
+    public function handle(string $uri): string
     {
         $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', $uri);
