@@ -5,10 +5,14 @@ namespace Core;
 
 class HttpHandler
 {
-    public function handle(string $uri): string
+    public function handle(string $uri)
     {
-        $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', $uri);
-        return $response->getBody();
+        if (filter_var($uri, FILTER_VALIDATE_URL)) {
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', $uri);
+            return $response->getBody();
+        } else {
+            return throw new \Exception("$uri is not a valid URL");
+        }
     }
 }

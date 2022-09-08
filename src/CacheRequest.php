@@ -14,18 +14,20 @@ class CacheRequest
         $this->cachePool = new FilesystemAdapter('', 0, "cache");
     }
 
-    public function save(string $key): void
+    public function save(string $key, string $response): void
     {
-        $data = $this->cachePool->getItem(md5($key));
+        $data = $this->cachePool->getItem($key);
         if (!$data->isHit()) {
-            $data->set('From cache:' . json_encode($key));
+            $data->set('From cache:' . $response);
             $this->cachePool->save($data);
         }
     }
 
     public function has(string $key): string
     {
-        $data = $this->cachePool->getItem($key);
+        if ($this->cachePool->hasItem($key)) {
+            $data = $this->cachePool->getItem($key);
+        }
         return $data->get();
     }
 

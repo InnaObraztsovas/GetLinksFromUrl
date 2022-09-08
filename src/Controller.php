@@ -14,18 +14,14 @@ class Controller
     public function showData()
     {
         $requests = $_SERVER['QUERY_STRING'];
-        if (filter_var($requests, FILTER_VALIDATE_URL)) {
+        $keyCache = md5($requests);
+        if ($this->cacheRequest->existCache($keyCache)) {
+            $result = $this->cacheRequest->has($keyCache);
+        } else {
             $responseBody = $this->httpHandler->handle($requests);
             $result = $this->dataParser->parser($responseBody);
-            if ($this->cacheRequest->existCache(md5($result))) {
-                $result = $this->cacheRequest->has(md5($result));
-            } else {
-                $this->cacheRequest->save($result);
-            }
-
-            echo json_encode($result);
-        } else {
-            echo("$requests is not a valid URL");
+            $this->cacheRequest->save($keyCache, $result);
         }
+        var_dump($result);
     }
 }
