@@ -17,11 +17,12 @@ class Controller
         $keyCache = md5($requests);
         if ($this->cacheRequest->existCache($keyCache)) {
             $result = $this->cacheRequest->has($keyCache);
+            echo $result;
         } else {
             $responseBody = $this->httpHandler->handle($requests);
             $result = $this->dataParser->parser($responseBody);
             $this->cacheRequest->save($keyCache, $result);
+            echo json_encode($result);
         }
-        var_dump($result);
     }
 }

@@ -10,9 +10,11 @@ class HttpHandler
         if (filter_var($uri, FILTER_VALIDATE_URL)) {
             $client = new \GuzzleHttp\Client();
             $response = $client->request('GET', $uri);
-            return $response->getBody();
-        } else {
-            return throw new \Exception("$uri is not a valid URL");
+            if ($response->getStatusCode() >= 200 || $response->getStatusCode() < 300) {
+                return $response->getBody();
+            }
+            } else {
+                return throw new \Exception("$uri is not a valid URL");
+            }
         }
-    }
 }

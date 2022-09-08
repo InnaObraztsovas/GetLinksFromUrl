@@ -14,11 +14,11 @@ class CacheRequest
         $this->cachePool = new FilesystemAdapter('', 0, "cache");
     }
 
-    public function save(string $key, string $response): void
+    public function save(string $key, array $response): void
     {
         $data = $this->cachePool->getItem($key);
         if (!$data->isHit()) {
-            $data->set('From cache:' . $response);
+            $data->set('From cache:' . json_encode($response));
             $this->cachePool->save($data);
         }
     }
