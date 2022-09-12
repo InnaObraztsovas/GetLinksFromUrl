@@ -20,8 +20,8 @@ private RedisAdapter $cachePool;
     public function __construct()
     {
 
-        $client = RedisAdapter::createConnection('redis://localhost:6379');
-        $this->cachePool = new RedisAdapter( $client, 'cache', 30);
+        $client = RedisAdapter::createConnection('redis://redis:6379');
+        $this->cachePool = new RedisAdapter( $client, 'cache', 600);
 //        $this->cachePool = new FilesystemAdapter('', 0, "cache");
 
 
@@ -32,9 +32,7 @@ private RedisAdapter $cachePool;
         $data = $this->cachePool->getItem($key);
         if (!$data->isHit()) {
             $data->set('From cache:' . json_encode($response));
-            $a = $this->cachePool->save($data);
-            $data = $data->get();
-            echo $data;
+            $this->cachePool->save($data);
 
         }
     }
