@@ -2,16 +2,29 @@
 
 namespace Core;
 
+use Psr\Cache\CacheItemInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+
+//use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
+
 
 class CacheRequest
 {
 
-    private FilesystemAdapter $cachePool;
+//    private FilesystemAdapter $cachePool;
+
+private RedisAdapter $cachePool;
+
 
     public function __construct()
     {
-        $this->cachePool = new FilesystemAdapter('', 0, "cache");
+
+        $client = RedisAdapter::createConnection('redis://localhost:6379');
+        $this->cachePool = new RedisAdapter( $client, 'cache', 30);
+//        $this->cachePool = new FilesystemAdapter('', 0, "cache");
+
+
     }
 
     public function save(string $key, array $response): void
@@ -19,7 +32,10 @@ class CacheRequest
         $data = $this->cachePool->getItem($key);
         if (!$data->isHit()) {
             $data->set('From cache:' . json_encode($response));
-            $this->cachePool->save($data);
+            $a = $this->cachePool->save($data);
+            $data = $data->get();
+            echo $data;
+
         }
     }
 

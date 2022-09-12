@@ -3,6 +3,8 @@
 namespace Core;
 
 
+use Symfony\Component\HttpFoundation\Request;
+
 class HttpHandler
 {
     public function handle(string $uri)
